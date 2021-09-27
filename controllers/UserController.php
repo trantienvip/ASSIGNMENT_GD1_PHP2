@@ -11,17 +11,18 @@ class UserController{
             
             $tmp_name = $_FILES['upload']['tmp_name'];
             $name = $_FILES['upload']['name'];
+            $tmp_size = $_FILES['upload']['size'];
+            $users = Users::find($id);
 
-            if (!empty($tmp_name) || !empty($name)) {
-                $path = "./image"; // Ảnh sẽ lưu vào thư mục images
+            if ($tmp_size > 0) {
+                $path = "./image";
                 move_uploaded_file($tmp_name, "./image/".$name); 
-                $avatar = $path .'/'. $name; // Đường dẫn ảnh lưu vào cơ sở dữ liệu
-
-                $sql = "UPDATE employees SET name = '$ten', email = '$email', avatar = '$avatar', address = '$address', birth_date = '$birth_date' WHERE id = $id";
+                $avatar = $path .'/'. $name;
             }else{
-                $sql = "UPDATE employees SET name = '$ten', email = '$email', address = '$address', birth_date = '$birth_date' WHERE id = $id";
+                $avatar = $users->avatar;
             }
 
+            $sql = "UPDATE employees SET name = '$ten', email = '$email', avatar = '$avatar', address = '$address', birth_date = '$birth_date' WHERE id = $id";
             Users::QueryTT($sql);
             header('location: ./index.php?ctrl=HomeController&action=index');
         }else{
@@ -30,6 +31,36 @@ class UserController{
             require_once('./views/edit.php');
         }
     }
+
+    // function edit(){
+    //     if (isset($_POST['btnSubmit'])) {
+    //         $id = $_POST['btnSubmit'];
+    //         $ten = $_POST['name'];
+    //         $email = $_POST['email'];
+    //         $address = $_POST['address'];
+    //         $birth_date = $_POST['birth_date'];
+            
+    //         $tmp_name = $_FILES['upload']['tmp_name'];
+    //         $name = $_FILES['upload']['name'];
+
+    //         if (!empty($tmp_name) || !empty($name)) {
+    //             $path = "./image"; // Ảnh sẽ lưu vào thư mục images
+    //             move_uploaded_file($tmp_name, "./image/".$name); 
+    //             $avatar = $path .'/'. $name; // Đường dẫn ảnh lưu vào cơ sở dữ liệu
+
+    //             $sql = "UPDATE employees SET name = '$ten', email = '$email', avatar = '$avatar', address = '$address', birth_date = '$birth_date' WHERE id = $id";
+    //         }else{
+    //             $sql = "UPDATE employees SET name = '$ten', email = '$email', address = '$address', birth_date = '$birth_date' WHERE id = $id";
+    //         }
+
+    //         Users::QueryTT($sql);
+    //         header('location: ./index.php?ctrl=HomeController&action=index');
+    //     }else{
+    //         $id = $_GET['id'];
+    //         $users = Users::find($id);
+    //         require_once('./views/edit.php');
+    //     }
+    // }
 
     function addUsers(){
         if (isset($_POST['btnAddUser'])) {
